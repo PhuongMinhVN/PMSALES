@@ -1,0 +1,35 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Build Web
+        # QUAN TRỌNG: Thay thế 'TEN_REPO_CUA_BAN' bằng tên repository thực tế của bạn trên GitHub.
+        # Ví dụ: nếu repo là 'my-shop', hãy sửa thành '/my-shop/'
+        # Nếu dùng tên miền user.github.io (root), hãy để là '/'
+        run: flutter build web --release --base-href "/PM-APP/"
+
+      # Tạo file 404.html giống index.html để hỗ trợ routing trên GitHub Pages
+      - name: Create 404.html
+        run: cp build/web/index.html build/web/404.html
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
