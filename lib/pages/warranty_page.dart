@@ -126,7 +126,6 @@ class _WarrantyPageState extends State<WarrantyPage> {
   }
 
 
-
   void _goToCheckout() async {
     final result = await Navigator.push(
       context,
